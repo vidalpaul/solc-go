@@ -1,10 +1,10 @@
-package mod_test
+package mod
 
 import (
 	"strings"
 	"testing"
 
-	"github.com/lmittmann/solc/internal/mod"
+	"github.com/vidalpaul/solc-go/internal/mod"
 )
 
 func TestModRoot(t *testing.T) {

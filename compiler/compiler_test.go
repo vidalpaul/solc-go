@@ -1,4 +1,4 @@
-package solc
+package compiler
 
 import (
 	"testing"

@@ -1,4 +1,4 @@
-package solc
+package download
 
 import (
 	"crypto/sha256"
@@ -8,7 +8,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/lmittmann/solc/internal/mod"
+	"github.com/vidalpaul/solc-go/internal/mod"
+
 	"golang.org/x/sync/singleflight"
 )
 

@@ -1,4 +1,4 @@
-package solc
+package download
 
 import "testing"
 

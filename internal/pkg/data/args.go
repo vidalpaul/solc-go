@@ -1,38 +1,6 @@
-package solc
+package data
 
-import (
-	"encoding/hex"
-	"encoding/json"
-	"fmt"
-	"strings"
-)
-
-// Contract represents a compiled contract.
-type Contract struct {
-	Code       []byte // The bytecode of the contract after deployment.
-	DeployCode []byte // The bytecode to deploy the contract.
-}
-
-// lang represents the language of the source code.
-type lang string
-
-const (
-	langSolidity lang = "Solidity"
-	langYul      lang = "Yul"
-)
-
-// EVMVersion represents the EVM version to compile for.
-type EVMVersion string
-
-const (
-	EVMVersionShanghai   EVMVersion = "shanghai"
-	EVMVersionParis      EVMVersion = "paris"
-	EVMVersionLondon     EVMVersion = "london"
-	EVMVersionBerlin     EVMVersion = "berlin"
-	EVMVersionIstanbul   EVMVersion = "istanbul"
-	EVMVersionPetersburg EVMVersion = "petersburg"
-	EVMVersionByzantium  EVMVersion = "byzantium"
-)
+import "encoding/json"
 
 type input struct {
 	Lang     lang           `json:"language"`
@@ -65,29 +33,6 @@ type output struct {
 	Errors    []error_                       `json:"errors"`
 	Sources   map[string]srcOut              `json:"sources"`
 	Contracts map[string]map[string]contract `json:"contracts"`
-}
-
-func (o *output) Err() error {
-	var fmtMsgs []string
-	for _, err := range o.Errors {
-		if strings.EqualFold(err.Severity, "error") {
-			fmtMsgs = append(fmtMsgs, err.FormattedMessage)
-		}
-	}
-
-	if len(fmtMsgs) == 0 {
-		return nil
-	}
-	return fmt.Errorf("solc: compilation failed\n%s", strings.Join(fmtMsgs, "\n"))
-}
-
-type error_ struct {
-	SourceLocation   sourceLocation `json:"sourceLocation"`
-	Type             string         `json:"type"`
-	Component        string         `json:"component"`
-	Severity         string         `json:"severity"`
-	Message          string         `json:"message"`
-	FormattedMessage string         `json:"formattedMessage"`
 }
 
 type sourceLocation struct {
@@ -130,40 +75,4 @@ type bytecode struct {
 type linkReference struct {
 	Start int `json:"start"`
 	End   int `json:"end"`
-}
-
-// hexBytes is a byte slice that is unmarshalled from a hexstring.
-type hexBytes []byte
-
-func (b *hexBytes) UnmarshalText(text []byte) error {
-	*b = make([]byte, hex.DecodedLen(len(text)))
-	_, err := hex.Decode(*b, text)
-	return err
-}
-
-type solcVersion struct {
-	Path   string
-	Sha256 [32]byte
-}
-
-// b returns a byte slice from a hexstring or panics if the hexstring does not
-// represent a vaild byte slice.
-func b(hexBytes string) []byte {
-	if !has0xPrefix(hexBytes) {
-		panic(fmt.Sprintf("hex bytes %q must have 0x prefix", hexBytes))
-	}
-	if len(hexBytes)%2 != 0 {
-		panic(fmt.Sprintf("hex bytes %q must have even number of hex chars", hexBytes))
-	}
-
-	bytes, err := hex.DecodeString(hexBytes[2:])
-	if err != nil {
-		panic(err)
-	}
-	return bytes
-}
-
-// has0xPrefix validates hexStr begins with '0x' or '0X'.
-func has0xPrefix(hexStr string) bool {
-	return len(hexStr) >= 2 && hexStr[0] == '0' && hexStr[1] == 'x'
 }

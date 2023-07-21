@@ -1,4 +1,4 @@
-package solc
+package compiler
 
 import (
 	"bytes"
@@ -12,8 +12,8 @@ import (
 	"path/filepath"
 	"sync"
 
-	"github.com/lmittmann/solc/debug"
-	"github.com/lmittmann/solc/internal/mod"
+	"github.com/vidalpaul/solc-go/internal/debug"
+	"github.com/vidalpaul/solc-go/internal/mod"
 	"golang.org/x/sync/singleflight"
 )
 
